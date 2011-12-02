@@ -85,6 +85,7 @@ MAIN:
                 if ($command ne ''){
                     system($command);
                 }
+                print "------------------------------------------------\n";
                 $changes += 1;
             }
             $fileinfo{$filename} = $info;
