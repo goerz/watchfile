@@ -1,30 +1,19 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 # watchfile:
 # This script prints info about changes to the file(s) specified
-# as command-line arguments.
+# as command-line arguments, and optionally runs a command every time there is a
+# change.
 
-# Options:
-# By default, the script checks on the file(s) every 10 seconds.
-# If you want to specify a different time interval, use the "-interval" option. 
-# By default, the script does not report on access-time changes.
-# If you want to be notified of access-time changes, use the "-atime" option
-# If you want the script to calculate and compare an MD5 digest for each file,
-# use the "-md5" option. This requires the Perl module Digest::MD5
-# which is not installed by default. Note that access-time changes will not
-# be reported if the "-md5" option is used since the file is accessed
-# in order to compute the MD5 digest.
-# By default, the script does not report on resource-fork changes.
-# If you want to be notified of resource-fork changes, use the "-rsrc" option.
-# If you want the script to make a beep when there is a change,
-# use the "-beep" option.
-
-# Copyright 2006, Cameron Hayne.  All Rights Reserved.  
+# Copyright 2011, Cameron Hayne, Michael Goerz.  All Rights Reserved.  
 # This program is free software.  You may copy or
 # redistribute it under the same terms as Perl itself.
 #
-# Created: September 2003  Cameron Hayne (macdev@hayne.net)
-# Modified: February 2006 to support resource forks
+# Created: September 2003  by Cameron Hayne (macdev@hayne.net)
+# Modified: February 2006  to support resource forks
+# Modified: December 2011  by Michael Goerz (goerz@physik.uni-kassel.de)
+#                          Added -command option to execute a command on every
+#                          change. Small changes to script output.
 
 use strict;
 use warnings;
@@ -106,9 +95,27 @@ MAIN:
 
 sub usage_error()
 {
-    my $options
-    = "[-command c] [-interval n] [-atime] [-md5] [-rsrc] [-beep] [-detailed]";
-    print STDERR "usage: watchfile $options filename(s)\n";
+    print STDERR '
+usage: watchfile [options] filename(s)
+
+Options are:
+
+   -command COMMAND   Run COMMAND every time there is a change"
+   -interval N        Check for changes every N seconds (default: 1)
+   -atime             Notify about access-time changes
+   -md5               Track changes based on md5 hashes. Access-time will not be
+                      reported since the file is accessed in order to compute
+                      the MD% digest
+   -rsrc              Notify about resource-fork changes
+   -beeb              Make a beep if there is a change
+   -detailed          Include time-stamps in the change report, and output of
+                      \'ls -ld\' for each changed file
+
+Usage example:
+    
+    watchfile -command \'rubber file.tex\' *.tex *.bib images/*
+
+';
     exit(1);
 }
 
