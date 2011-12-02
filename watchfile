@@ -40,6 +40,7 @@ sub determine_changes($$);
 sub calc_md5($);
 
 # global variables
+my $command = '';     # command to execute whenever a file changes
 my $interval = 10;    # time (in seconds) between checks
 my $report_atime = 0; # whether to report on access time changes
 my $report_rsrc = 0;  # whether to report on resource forks as well
@@ -81,6 +82,9 @@ MAIN:
             if ($mods)
             {
                 print_msg($filename, $info, "Changed: $mods");
+                if ($command ne ''){
+                    system($command);
+                }
                 $changes += 1;
             }
             $fileinfo{$filename} = $info;
@@ -100,7 +104,7 @@ MAIN:
 
 sub usage_error()
 {
-    my $options = "[-interval n] [-atime] [-md5] [-rsrc] [-beep]";
+    my $options = "[-command c] [-interval n] [-atime] [-md5] [-rsrc] [-beep]";
     print STDERR "usage: watchfile $options filename(s)\n";
     exit(1);
 }
@@ -110,6 +114,7 @@ sub handle_command_line_options()
     use Getopt::Long;
 
     GetOptions(
+                'command=s'    => \$command,
                 'interval=i'    => \$interval,
                 'atime'         => \$report_atime,
                 'md5'           => \$want_md5,
