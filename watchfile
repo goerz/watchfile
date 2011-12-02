@@ -46,6 +46,7 @@ my $report_atime = 0; # whether to report on access time changes
 my $report_rsrc = 0;  # whether to report on resource forks as well
 my $want_md5 = 0;     # whether an md5 digest is to be computed for each file
 my $want_beep = 0;    # whether to make a beep when reporting changes
+my $detailed = 0;     # whether to print detailed information
 my @filenames;        # names of files to be watched
 
 
@@ -105,7 +106,8 @@ MAIN:
 
 sub usage_error()
 {
-    my $options = "[-command c] [-interval n] [-atime] [-md5] [-rsrc] [-beep]";
+    my $options
+    = "[-command c] [-interval n] [-atime] [-md5] [-rsrc] [-beep] [-detailed]";
     print STDERR "usage: watchfile $options filename(s)\n";
     exit(1);
 }
@@ -115,12 +117,13 @@ sub handle_command_line_options()
     use Getopt::Long;
 
     GetOptions(
-                'command=s'    => \$command,
+                'command=s'     => \$command,
                 'interval=i'    => \$interval,
                 'atime'         => \$report_atime,
                 'md5'           => \$want_md5,
                 'rsrc'          => \$report_rsrc,
                 'beep'          => \$want_beep,
+                'detailed'      => \$detailed,
                 ) or usage_error();
 
     usage_error() unless scalar(@ARGV) >= 1; # must give a filename
@@ -158,16 +161,20 @@ sub print_msg($$$)
 {
     my ($filename, $info, $msg) = @_;
 
-    my $date = localtime(time());
-
-    print "$date: $filename: $msg\n";
+    if ($detailed)
+    {
+        my $date = localtime(time());
+        print "$date: $filename: $msg\n";
+    } else {
+        print "$filename: $msg\n";
+    }
     if ($info->{seen}) # file exists
     {
-        system("/bin/ls -ld \"$filename\"");
+        system("/bin/ls -ld \"$filename\"") if ($detailed);
         if ($report_rsrc && $info->{rsrc}->size > 0)
         {
             my $rsrc_filename = "$filename/..namedfork/rsrc";
-            system("/bin/ls -ld \"$rsrc_filename\"");
+            system("/bin/ls -ld \"$rsrc_filename\"") if ($detailed);
         }
     }
 }
