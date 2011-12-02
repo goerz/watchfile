@@ -41,7 +41,7 @@ sub calc_md5($);
 
 # global variables
 my $command = '';     # command to execute whenever a file changes
-my $interval = 10;    # time (in seconds) between checks
+my $interval = 1;     # time (in seconds) between checks
 my $report_atime = 0; # whether to report on access time changes
 my $report_rsrc = 0;  # whether to report on resource forks as well
 my $want_md5 = 0;     # whether an md5 digest is to be computed for each file
