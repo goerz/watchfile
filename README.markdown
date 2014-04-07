@@ -3,7 +3,7 @@
 This is a fork of Cameron Hayne's `watchfile` script (See
 [http://hayne.net/MacDev/WatchFile/][1])
 
-my primary use for the script is to watch a directory of files and run
+My primary use for the script is to watch a directory of files and run
 [LaTeX][2] (or, in my case [rubber][3]) anytime one of the changes. To reflect
 this use case, I added a `-command` option to the script that allows to execute
 an arbitrary command every time there is a change. In addition, the script
